@@ -2,8 +2,13 @@ from django.db import models
 from apps.usuarios.models import InformacionBase
 
 # Create your models here.
+class ActivoManager(models.Manager):
+    def activos(self):
+        return self.filter(estado=True)
+
 class TipoEvento(InformacionBase):
     nombre = models.CharField(max_length=100, unique=True)
+    objects = ActivoManager()
     
     def __str__(self):
         return self.nombre
@@ -20,10 +25,11 @@ class Evento(InformacionBase):
     latitud = models.FloatField()
     longitud = models.FloatField()
     imagen = models.ImageField(upload_to='media/imagenes/eventos')
-    hora_apertura = models.DateField()
-    hora_cierre = models.DateField()
+    hora_apertura = models.TimeField()
+    hora_cierre = models.TimeField()
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.CASCADE)
     precio = models.FloatField()
+    objects = ActivoManager()
     
     def __str__(self):
         return self.nombre

@@ -5,10 +5,15 @@ from apps.lugaresturisticos.models import LugarTuristico
 from apps.eventos.models import Evento
 from apps.alojamientos.models import Alojamiento
 
-# Create your models here.        
+# Create your models here. 
+class ActivoManager(models.Manager):
+    def activos(self):
+        return self.filter(estado=True)
+       
 class RedSocial(InformacionBase):
     nombre = models.CharField(max_length=100, unique=True)
     url = models.URLField()
+    objects = ActivoManager()
     
     def __str__(self):
         return self.nombre
@@ -28,6 +33,7 @@ class ValoracionComentario(InformacionBase):
     alojamiento = models.ForeignKey(Alojamiento, on_delete=models.CASCADE, null=True, blank=True)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, null=True, blank=True)
     red_social = models.ForeignKey(RedSocial, on_delete=models.CASCADE, null=True, blank=True)
+    objects = ActivoManager()
     
     def __str__(self):
         return self.texto 

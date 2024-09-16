@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import PersonalizacionUsuario
 
 # Create your models here.
+class ActivoManager(models.Manager):
+    def activos(self):
+        return self.filter(estado=True)
 
 class InformacionBase(models.Model):
     fecha_creacion=models.DateTimeField(auto_now_add=True)
@@ -15,6 +18,7 @@ class InformacionBase(models.Model):
 class Idioma(InformacionBase):
     nombre = models.CharField(verbose_name="Nombre", max_length=50, unique=True)
     codigo = models.CharField(verbose_name="Codigo", max_length=100, unique=True)
+    objects = ActivoManager()
 
     def __str__(self):
         return self.nombre
@@ -27,6 +31,7 @@ class Idioma(InformacionBase):
 class Nacionalidad(InformacionBase):
     nombre = models.CharField(verbose_name="Nombre", max_length=50, unique=True)
     codigo = models.CharField(verbose_name="Codigo", max_length=100, unique=True)
+    objects = ActivoManager()
 
     def __str__(self):
         return self.nombre
@@ -37,7 +42,8 @@ class Nacionalidad(InformacionBase):
         verbose_name_plural = "Nacionalidades"  
 
 class TipoDeCuenta(InformacionBase):
-    nombre = models.CharField( max_length=50)
+    nombre = models.CharField(verbose_name="Nombre", max_length=50, unique=True)
+    objects = ActivoManager()
 
     def __str__(self):
         return self.nombre
@@ -48,7 +54,8 @@ class TipoDeCuenta(InformacionBase):
         verbose_name_plural = "TiposDeCuentas"  
         
 class TipoDocumento(InformacionBase):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(verbose_name="Nombre", max_length=100, unique=True)
+    objects = ActivoManager()
     
     def __str__(self):
         return self.nombre
@@ -73,11 +80,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     nombre = models.CharField(max_length=100) 
     apellido = models.CharField(max_length=30) 
     fecha_nacimiento = models.DateField("Fecha de nacimiento", null=True, blank=True) 
+    idioma = models.ForeignKey(Idioma, on_delete=models.CASCADE, null=True, blank=True)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, null=True, blank=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True) 
     fecha_actualizacion = models.DateTimeField(auto_now=True)  
     estado = models.BooleanField(default=True)
-    idioma = models.ForeignKey(Idioma, on_delete=models.CASCADE, null=True, blank=True)
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, null=True, blank=True)
     
     # Acceso
     is_active = models.BooleanField("Habilitado", default=True)  

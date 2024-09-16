@@ -1,11 +1,15 @@
 from django.db import models
 from apps.usuarios.models import InformacionBase
 
+class ActivoManager(models.Manager):
+    def activos(self):
+        return self.filter(estado=True)
 
 class Menu(InformacionBase):
     nombre = models.CharField(max_length=50, unique=True)
     descripcion = models.TextField()
     precio = models.FloatField()  
+    objects = ActivoManager()
 
     def __str__(self):
         return self.nombre
@@ -21,8 +25,9 @@ class Restaurante(InformacionBase):
     latitud = models.FloatField()
     longitud = models.FloatField()
     imagen = models.ImageField(upload_to='media/imagenes/restaurantes')
-    hora_apertura = models.DateField()
-    hora_cierre = models.DateField()
+    hora_apertura = models.TimeField()
+    hora_cierre = models.TimeField()
+    objects = ActivoManager()
     
     
     def __str__(self):
