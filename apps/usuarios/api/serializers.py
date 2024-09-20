@@ -2,6 +2,7 @@ from apps.usuarios.models import Idioma, Nacionalidad, TipoDeCuenta, TipoDocumen
 from rest_framework import serializers
 
 
+
 class IdiomaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Idioma
@@ -47,5 +48,4 @@ class UsuarioSerializer(serializers.ModelSerializer):
         fields = ['id', 'tipo_de_cuenta', 'tipo_documento','identificacion', 'correo', 'password', 'nombre', 'apellido', 'fecha_nacimiento','idioma', 'nacionalidad', 'fecha_creacion', 'fecha_actualizacion', 'estado']
         #campos de solo lectura
         read_only_fields = ('tipo_de_cuenta','fecha_creacion', 'fecha_actualizacion', 'estado', )
-        
         

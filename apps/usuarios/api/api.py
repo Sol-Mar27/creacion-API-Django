@@ -1,5 +1,6 @@
 from apps.usuarios.models import Idioma, Nacionalidad, TipoDeCuenta, TipoDocumento, Usuario
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .serializers import IdiomaSerializer, NacionalidadSerializer, TipoDeCuentaSerializer, TipoDocumentoSerializer, UsuarioSerializer 
 
@@ -152,6 +153,18 @@ class TipoDocumentoViewSet(viewsets.ModelViewSet):
 class UsuarioViewSet(viewsets.ModelViewSet):    
     queryset = Usuario.objects.filter(estado=True)
     serializer_class = UsuarioSerializer
+    
+    # Permite cualquier usuario para el registro (POST)
+    def get_permissions(self):
+        if self.action in ['create']:
+            self.permission_classes = [AllowAny]  # Permitir acceso no autenticado para la creación
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para otras acciones
+        return super(UsuarioViewSet, self).get_permissions()
+
+    def perform_create(self, serializer):
+        """Sobrescribe el método para crear usuarios usando create_user"""
+        serializer.save()  # Aquí ya llamará al método `create` del serializer
     
     def create(self, request, *args, **kwargs):                
         serializer = self.get_serializer(data=request.data) 
